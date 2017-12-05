@@ -6,37 +6,41 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class Client {
+public class Client implements Runnable {
 
-	Client() {
+	private int numCli;
 
-		Socket socket;
-		BufferedReader in;
-		PrintWriter out;
-
-		try {
-
-			socket = new Socket("127.0.0.1", 12000);
-			System.out.println("Demande de connexion");
-
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-			out = new PrintWriter(socket.getOutputStream());
-
-			out.println("hello");
-			Thread.sleep(1000);
-			socket.close();
-
-		} catch (UnknownHostException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	Client(int numCli) {
+		this.numCli = numCli;
 	}
 
+	@Override
+	public void run() {
+		try {
+			Socket socket = new Socket("127.0.0.1", 12000);
+			System.out.println("Demande de connexion client : " + numCli);
+			PrintWriter out = new PrintWriter(socket.getOutputStream());
+			Boolean ok = true;
+
+			while (!Thread.currentThread().isInterrupted()) {
+
+				if (Thread.currentThread().isInterrupted()) {
+					System.out.println("Interruption client n :" + numCli);
+					System.out.flush();
+				}
+				// in = new BufferedReader(new
+				// InputStreamReader(socket.getInputStream()));
+
+				out.print("hello");
+				System.out.println("client : hello num :" + numCli);
+				out.flush();
+				
+
+			}
+			System.out.println("fermeture client : " + numCli);
+			socket.close();
+		} catch (IOException e) {
+
+		}
+	}
 }

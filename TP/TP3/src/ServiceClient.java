@@ -12,35 +12,42 @@ class ServiceClient implements Runnable {
 	private Socket client;
 	private static int nbrclient = 1;
 
-	public ServiceClient(ServerSocket s) {
-		ma_connection = s;
+	public ServiceClient(Socket s) {
+		client = s;
 	}
 
 	@Override
 	public void run() {
 
-		while (true) {
-			try {
-				client = ma_connection.accept();
-				// Un client se connecte on l'accepte
-				System.out.println("Le client numéro " + nbrclient + " est connecté !");
-				nbrclient += 1;
+		try {
 
-				Thread t = new Thread(new Messagerie(client));
-				t.start();
-				try {
-					t.join();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			// Un client se connecte on l'accepte
+			System.out.println("Le client numéro " + nbrclient + " est connecté !");
+			nbrclient += 1;
+
+			InputStreamReader isr = new InputStreamReader(client.getInputStream(), "UTF-8");
+			BufferedReader flux_entrant = new BufferedReader(isr);
+
+			PrintWriter osw = new PrintWriter(client.getOutputStream(), true);
+			osw.println("connecté au serveurJouet easy");
+
+			String nouveau_message = flux_entrant.readLine();
+			System.out.println(nouveau_message);
+
+			while (nouveau_message == null) {
+				System.out.println(nouveau_message);
+				nouveau_message = flux_entrant.readLine();
+				if(nouveau_message.compareTo("stop") != 0){
+					break;
 				}
-				//nbrclient--;
-
-				client.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+
+			//nbrclient--;
+
+			client.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+
 		}
 
 	}

@@ -27,19 +27,6 @@ public class Messagerie implements Runnable {
 	}
 
 	private void attenteFinMessage() throws UnsupportedEncodingException, IOException {
-		InputStreamReader isr = new InputStreamReader(client.getInputStream(), "UTF-8");
-		BufferedReader flux_entrant = new BufferedReader(isr);
-
-		PrintWriter osw = new PrintWriter(client.getOutputStream(), true);
-		osw.println("connecté au serveurJouet easy");
-
-		String nouveau_message = flux_entrant.readLine();
-		System.out.println(nouveau_message);
-
-		while (nouveau_message.compareTo("stop") != 0) {
-			System.out.println(nouveau_message);
-			nouveau_message = flux_entrant.readLine();
-		}
 	}
 
 }
